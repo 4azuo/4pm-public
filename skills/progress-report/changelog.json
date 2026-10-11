@@ -1,0 +1,11 @@
+[
+  {
+    "version": "1.0.0",
+    "date": "2026-10-11",
+    "changes": [
+      "Initial release.",
+      "Collects commits per branch, contributors and line counts for a time window as JSON.",
+      "Writes reports/progress-<date>.md including tasks done in the 4PM autonomous books."
+    ]
+  }
+]

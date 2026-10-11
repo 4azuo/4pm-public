@@ -1,0 +1,12 @@
+[
+  {
+    "version": "1.0.0",
+    "date": "2026-10-11",
+    "changes": [
+      "Initial release.",
+      "Scans staged changes, a branch diff (--base), the working tree, or all tracked files.",
+      "Detects common token formats, private keys, URL credentials and password assignments; flags project.secrets.json, .env and key files.",
+      "Masks findings and supports a `secret-scan: allow` line marker."
+    ]
+  }
+]

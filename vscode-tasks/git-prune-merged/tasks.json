@@ -1,0 +1,20 @@
+{
+  "tasks": [
+    {
+      "label": "4pm: prune merged branches (dry run)",
+      "detail": "List local branches already merged into the base branch",
+      "type": "shell",
+      "command": "bash .4pm/scripts/git-prune-merged/prune-merged.sh",
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "shared" }
+    },
+    {
+      "label": "4pm: prune merged branches (apply)",
+      "detail": "Delete local branches already merged into the base branch",
+      "type": "shell",
+      "command": "bash .4pm/scripts/git-prune-merged/prune-merged.sh --apply",
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "shared" }
+    }
+  ]
+}

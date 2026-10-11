@@ -1,0 +1,10 @@
+[
+  {
+    "version": "1.0.0",
+    "date": "2026-10-11",
+    "changes": [
+      "Initial release.",
+      "Adds \"4pm: prune merged branches (dry run)\" and \"(apply)\" tasks; requires the git-prune-merged script."
+    ]
+  }
+]

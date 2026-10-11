@@ -1,0 +1,11 @@
+[
+  {
+    "version": "1.0.0",
+    "date": "2026-10-11",
+    "changes": [
+      "Initial release.",
+      "Lists (dry run) or deletes (--apply) local branches merged into the base branch.",
+      "Protects the current/base branch, main/master/develop, release/* and autonomous-books/*."
+    ]
+  }
+]

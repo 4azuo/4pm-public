@@ -1,0 +1,11 @@
+[
+  {
+    "version": "1.0.0",
+    "date": "2026-10-11",
+    "changes": [
+      "Initial release.",
+      "Creates or extends tests/IT/senarios/<senario>/ with senario.json, testcases.json and TC-00x specs.",
+      "Ships templates for the scenario, the case manifest and a test-case spec."
+    ]
+  }
+]

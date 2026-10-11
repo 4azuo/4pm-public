@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "items": [
+    {
+      "kind": "skill",
+      "slug": "check-usage",
+      "path": "skills/check-usage",
+      "name": "Check usage",
+      "description": "Show Claude Code plan usage — session and weekly % with reset times, like the built-in /usage screen.",
+      "version": "1.0.0",
+      "category": "devops",
+      "tags": ["claude", "usage", "quota"],
+      "providers": ["claude"]
+    },
+    {
+      "kind": "skill",
+      "slug": "secret-scan",
+      "path": "skills/secret-scan",
+      "name": "Secret scan",
+      "description": "Scan staged changes, a branch diff or the whole repo for leaked secrets and forbidden files before committing.",
+      "version": "1.0.0",
+      "category": "review",
+      "tags": ["security", "secrets", "pre-commit"],
+      "providers": ["claude", "codex"]
+    },
+    {
+      "kind": "skill",
+      "slug": "it-scenario",
+      "path": "skills/it-scenario",
+      "name": "Integration test scenario",
+      "description": "Create or extend integration-test scenarios and test-case specs under tests/IT/senarios in the 4PM layout.",
+      "version": "1.0.0",
+      "category": "testing",
+      "tags": ["testing", "integration", "spec"],
+      "providers": ["claude", "codex"]
+    },
+    {
+      "kind": "skill",
+      "slug": "progress-report",
+      "path": "skills/progress-report",
+      "name": "Progress report",
+      "description": "Write a fact-based daily or date-range progress report into reports/ from git activity and the 4PM done book.",
+      "version": "1.0.0",
+      "category": "product",
+      "tags": ["report", "standup", "git"],
+      "providers": ["claude", "codex"]
+    },
+    {
+      "kind": "subagent",
+      "slug": "code-reviewer",
+      "path": "agents/code-reviewer",
+      "name": "Code reviewer",
+      "description": "Read-only reviewer that verifies and ranks correctness and security findings in a diff, branch or PR.",
+      "version": "1.0.0",
+      "category": "review",
+      "tags": ["review", "security", "read-only"],
+      "providers": ["claude", "codex"]
+    },
+    {
+      "kind": "script",
+      "slug": "git-prune-merged",
+      "path": "scripts/git-prune-merged",
+      "name": "Prune merged branches",
+      "description": "Delete local git branches already merged into the base branch (dry run by default).",
+      "version": "1.0.0",
+      "category": "devops",
+      "tags": ["git", "cleanup"]
+    },
+    {
+      "kind": "vscode-task",
+      "slug": "git-prune-merged",
+      "path": "vscode-tasks/git-prune-merged",
+      "name": "Prune merged branches (VS Code tasks)",
+      "description": "VS Code tasks to list or delete local branches already merged into the base branch.",
+      "version": "1.0.0",
+      "category": "devops",
+      "tags": ["git", "cleanup", "vscode"],
+      "requires": ["script:git-prune-merged"]
+    }
+  ]
+}

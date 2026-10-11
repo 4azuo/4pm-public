@@ -1,0 +1,27 @@
+# Validate the registry, changelogs and payloads on every PR / push to main; pack as a dry run.
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate registry + items
+        run: node tools/validate.mjs
+      - name: Syntax-check bundled scripts
+        run: |
+          find . -name '*.py' -not -path './.git/*' -print0 | xargs -0 -r python3 -m py_compile
+          find . -name '*.sh' -not -path './.git/*' -print0 | xargs -0 -r -n1 bash -n
+      - name: Pack (dry run)
+        run: node tools/pack.mjs --ref "ci-${GITHUB_SHA::7}"

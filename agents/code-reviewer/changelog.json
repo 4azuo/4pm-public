@@ -1,0 +1,11 @@
+[
+  {
+    "version": "1.0.0",
+    "date": "2026-10-11",
+    "changes": [
+      "Initial release for Claude Code (agent.md) and Codex (agent.codex.toml, read-only sandbox).",
+      "Reviews a named target, the current branch, or local changes; verifies each finding before reporting.",
+      "Ranked findings with severity, file:line, failure scenario and suggested fix."
+    ]
+  }
+]

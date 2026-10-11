@@ -1,0 +1,11 @@
+[
+  {
+    "version": "1.0.0",
+    "date": "2026-10-11",
+    "changes": [
+      "Initial release on the 4PM marketplace (previously bundled with the project template).",
+      "Shows session and weekly usage with reset times; --json prints the raw response.",
+      "Saves the last result to output/last-usage-check.json for automation."
+    ]
+  }
+]

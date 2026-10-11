@@ -1,0 +1,36 @@
+# On a `v*` tag: validate, pack every item, and publish the zips + the release index (registry.json)
+# as GitHub Release assets. The 4PM market-server seeds the release named by OFFICIAL_PACKAGES_REF.
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate
+        run: node tools/validate.mjs
+      - name: Pack
+        run: node tools/pack.mjs --ref "$GITHUB_REF_NAME"
+      - name: Release notes
+        run: |
+          node -e '
+            const r = require("./dist/registry.json");
+            const lines = r.items.map(i => `- **${i.kind}:${i.slug}** ${i.version} — ${i.changelog.changes[0]}`);
+            require("fs").writeFileSync("dist/NOTES.md", `Packages in this release:\n\n${lines.join("\n")}\n`);
+          '
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/*.zip dist/registry.json \
+            --title "$GITHUB_REF_NAME" --notes-file dist/NOTES.md
