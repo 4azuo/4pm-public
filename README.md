@@ -6,7 +6,6 @@ copied by hand into any project.
 
 | Item | Kind | What it does | Claude | Codex |
 | --- | --- | --- | :-: | :-: |
-| [`check-usage`](skills/check-usage) | skill | Claude Code plan usage — session/weekly % and reset times | ✓ | — |
 | [`secret-scan`](skills/secret-scan) | skill | Scan changes for leaked secrets and forbidden files before committing | ✓ | ✓ |
 | [`it-scenario`](skills/it-scenario) | skill | Create integration-test scenarios and test-case specs in the 4PM layout | ✓ | ✓ |
 | [`progress-report`](skills/progress-report) | skill | Fact-based daily/range progress report from git + the done book | ✓ | ✓ |
