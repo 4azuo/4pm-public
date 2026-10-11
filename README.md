@@ -44,3 +44,7 @@ tools/                   # validate.mjs · pack.mjs (Node >= 22, no dependencies
 
 See [`CLAUDE.md`](CLAUDE.md) for the item rules and the release flow. Run `node tools/validate.mjs`
 before opening a PR.
+
+## License
+
+[MIT](LICENSE) — free to use, copy, modify and redistribute.
