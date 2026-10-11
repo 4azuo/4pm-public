@@ -1,0 +1,10 @@
+[
+  {
+    "version": "1.0.0",
+    "date": "2026-10-11",
+    "changes": [
+      "Initial release.",
+      "General working rules for AI coding agents: security first, minimal focused changes, verify with tests, safe git. Use Adapt with AI to fit it to your project."
+    ]
+  }
+]

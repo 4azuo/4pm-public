@@ -1,6 +1,7 @@
 # 4pm-public
 
-Official skills, subagents, scripts and VS Code tasks published by **4PM** for everyone to use.
+Official skills, subagents, scripts, VS Code tasks, commands, hooks, guides and bundles published by
+**4PM** for everyone to use.
 Every item here is available in the 4PM **Marketplace** with an **Official** badge, and can also be
 copied by hand into any project.
 
@@ -12,6 +13,10 @@ copied by hand into any project.
 | [`code-reviewer`](agents/code-reviewer) | subagent | Read-only reviewer that verifies and ranks findings | ✓ | ✓ |
 | [`git-prune-merged`](scripts/git-prune-merged) | script | Delete local branches already merged into the base | — | — |
 | [`git-prune-merged`](vscode-tasks/git-prune-merged) | VS Code task | Run the prune script from **Terminal → Run Task** (requires the script) | — | — |
+| [`commit-message`](commands/commit-message) | command | `/commit-message` drafts a Conventional Commits message from the staged diff | ✓ | — |
+| [`bash-guard`](hooks/bash-guard) | hook | Blocks destructive shell commands before the agent runs them | ✓ | ✓ (experimental) |
+| [`agent-working-rules`](guides/agent-working-rules) | guide | General working rules for AI agents — apply with **Adapt with AI** | `CLAUDE.md` | `AGENT.md` |
+| [`git-housekeeping`](bundles/git-housekeeping) | bundle | `git-prune-merged` script + tasks + `/commit-message` | ✓ | — |
 
 ## Install
 
@@ -27,6 +32,10 @@ are never overwritten.
 | subagent | `.claude/agents/<slug>.md` (= `agent.md`) | `.codex/agents/<slug>.toml` (= `agent.codex.toml`) |
 | script | `.4pm/scripts/<slug>/` | same |
 | VS Code task | merge the `tasks` entries into `.vscode/tasks.json` | same |
+| command | `.claude/commands/<slug>.md` (= `command.md`) | — (publish a skill instead) |
+| hook | scripts → `.claude/hooks/<slug>/`, groups → `hooks` in `.claude/settings.json` (`{{hookDir}}` = `"$CLAUDE_PROJECT_DIR"/.claude/hooks/<slug>`) | scripts → `.codex/hooks/<slug>/`, groups → `.codex/hooks.json` |
+| guide | merge `GUIDE.md` into your `CLAUDE.md` by hand (4PM: **Adapt with AI**) | `AGENTS.md` / `AGENT.md` |
+| bundle | install each item listed in `bundle.json` | same |
 
 ## Layout
 
@@ -36,6 +45,10 @@ skills/<slug>/           # SKILL.md + helper files + changelog.json
 agents/<slug>/           # agent.md (+ agent.codex.toml, memory) + changelog.json
 scripts/<slug>/          # script files + README.md + changelog.json
 vscode-tasks/<slug>/     # tasks.json ({ "tasks": [...] }) + changelog.json
+commands/<slug>/         # command.md (Claude slash command) + changelog.json
+hooks/<slug>/            # hook.json ({ "hooks": { "<Event>": [...] } }) + scripts + changelog.json
+guides/<slug>/           # GUIDE.md + changelog.json
+bundles/<slug>/          # bundle.json ({ "members": ["<kind>:<slug>", …] }) + changelog.json
 tools/                   # validate.mjs · pack.mjs (Node >= 22, no dependencies)
 ```
 

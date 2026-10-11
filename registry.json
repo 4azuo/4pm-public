@@ -102,6 +102,65 @@
       "requires": [
         "script:git-prune-merged"
       ]
+    },
+    {
+      "kind": "command",
+      "slug": "commit-message",
+      "path": "commands/commit-message",
+      "name": "Commit message",
+      "description": "Claude slash command that drafts a Conventional Commits message from the staged changes.",
+      "version": "1.0.0",
+      "category": "coding",
+      "tags": [
+        "git",
+        "commit",
+        "claude"
+      ]
+    },
+    {
+      "kind": "hook",
+      "slug": "bash-guard",
+      "path": "hooks/bash-guard",
+      "name": "Bash guard",
+      "description": "PreToolUse hook that blocks destructive shell commands (rm -rf /, force push, push to main, curl|sh, printing secret files).",
+      "version": "1.0.0",
+      "category": "devops",
+      "tags": [
+        "security",
+        "hook",
+        "git"
+      ],
+      "providers": [
+        "claude",
+        "codex"
+      ]
+    },
+    {
+      "kind": "guide",
+      "slug": "agent-working-rules",
+      "path": "guides/agent-working-rules",
+      "name": "Agent working rules",
+      "description": "General working rules for AI coding agents — security first, small focused changes, verified with tests, safe git.",
+      "version": "1.0.0",
+      "category": "docs",
+      "tags": [
+        "guide",
+        "claude-md",
+        "agents"
+      ]
+    },
+    {
+      "kind": "bundle",
+      "slug": "git-housekeeping",
+      "path": "bundles/git-housekeeping",
+      "name": "Git housekeeping",
+      "description": "Prune merged branches (script + VS Code tasks) and draft commit messages with /commit-message.",
+      "version": "1.0.0",
+      "category": "devops",
+      "tags": [
+        "git",
+        "bundle"
+      ]
     }
   ]
 }

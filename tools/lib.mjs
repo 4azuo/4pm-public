@@ -1,7 +1,7 @@
 /**
  * Shared helpers for the 4pm-public tools: load + validate the registry, each item's changelog and
  * payload shape, and list an item's payload files. No dependencies (Node >= 22).
- * Rules mirror the 4PM marketplace (ADR-0185 manifest, ADR-0459 repo layout, ADR-0460 kinds).
+ * Rules mirror the 4PM marketplace (ADR-0185 manifest, ADR-0459 repo layout, ADR-0460/0461/0462 kinds).
  */
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, sep } from "node:path";
@@ -11,7 +11,22 @@ import { fileURLToPath } from "node:url";
 export const ROOT = fileURLToPath(new URL("..", import.meta.url));
 
 /** Item kind → top-level folder. */
-export const KIND_DIRS = { skill: "skills", subagent: "agents", script: "scripts", "vscode-task": "vscode-tasks" };
+export const KIND_DIRS = {
+  skill: "skills",
+  subagent: "agents",
+  script: "scripts",
+  "vscode-task": "vscode-tasks",
+  command: "commands",
+  hook: "hooks",
+  guide: "guides",
+  bundle: "bundles",
+};
+/** Kinds a bundle may contain (no guide, no nested bundle). */
+export const BUNDLE_MEMBER_KINDS = ["skill", "subagent", "script", "vscode-task", "command", "hook"];
+/** Kinds whose install is per provider. */
+export const PROVIDER_KINDS = ["skill", "subagent", "hook"];
+/** Hook event names. */
+const EVENT_RE = /^[A-Za-z][A-Za-z0-9]{0,63}$/;
 /** Providers a skill/subagent may target. */
 export const PROVIDERS = ["claude", "codex"];
 /** Seeded marketplace category slugs (market-server MarketCategorySeedService). */
@@ -115,6 +130,39 @@ function checkPayload(item, files, taskLabels, errors) {
       if (!/^developer_instructions\s*=/m.test(toml)) errors.push(`${item.path}/agent.codex.toml: missing developer_instructions`);
     }
   }
+  if (item.kind === "command") {
+    if (files.length !== 1 || files[0] !== "command.md") errors.push(`${item.path}: a command holds exactly one command.md`);
+  }
+  if (item.kind === "guide") {
+    if (files.length !== 1 || files[0] !== "GUIDE.md") errors.push(`${item.path}: a guide holds exactly one GUIDE.md`);
+  }
+  if (item.kind === "hook") {
+    if (!files.includes("hook.json")) errors.push(`${item.path}: missing hook.json`);
+    else {
+      let doc;
+      try {
+        doc = JSON.parse(readFileSync(at("hook.json"), "utf8"));
+      } catch (e) {
+        errors.push(`${item.path}/hook.json: invalid JSON (${e.message})`);
+      }
+      const hooks = doc?.hooks;
+      if (doc && (typeof hooks !== "object" || hooks === null || Array.isArray(hooks) || Object.keys(hooks).length === 0)) {
+        errors.push(`${item.path}/hook.json: needs a non-empty "hooks" object`);
+      }
+      for (const [event, groups] of Object.entries(hooks ?? {})) {
+        if (!EVENT_RE.test(event)) errors.push(`${item.path}/hook.json: bad event ${event}`);
+        if (!Array.isArray(groups) || groups.length === 0) errors.push(`${item.path}/hook.json: ${event} needs groups`);
+        for (const g of Array.isArray(groups) ? groups : []) {
+          if (!Array.isArray(g?.hooks) || g.hooks.length === 0 || g.hooks.some((h) => h?.type !== "command" || typeof h.command !== "string" || !h.command.trim())) {
+            errors.push(`${item.path}/hook.json: every ${event} hook must be {"type":"command","command":"…"}`);
+          }
+        }
+      }
+    }
+  }
+  if (item.kind === "bundle") {
+    if (files.length !== 1 || files[0] !== "bundle.json") errors.push(`${item.path}: a bundle folder holds exactly bundle.json`);
+  }
   if (item.kind === "vscode-task") {
     if (files.length !== 1 || files[0] !== "tasks.json") {
       errors.push(`${item.path}: a vscode-task item holds exactly one tasks.json`);
@@ -136,6 +184,19 @@ function checkPayload(item, files, taskLabels, errors) {
       if (t?.runOptions?.runOn === "folderOpen") errors.push(`${item.path}/tasks.json: "${t.label}" must not run on folderOpen`);
     }
   }
+}
+
+/** A bundle's member keys from its `bundle.json` (`{ "members": ["<kind>:<slug>", …] }`), or an error. */
+export function bundleMembers(item) {
+  let doc;
+  try {
+    doc = JSON.parse(readFileSync(join(ROOT, item.path, "bundle.json"), "utf8"));
+  } catch (e) {
+    return `invalid JSON (${e.message})`;
+  }
+  if (!Array.isArray(doc?.members) || doc.members.some((m) => typeof m !== "string")) return '"members" must be a string array';
+  if (new Set(doc.members).size !== doc.members.length) return "duplicate members";
+  return doc.members;
 }
 
 /** Detect a cycle in the requires graph; returns the cycle path or null. */
@@ -197,7 +258,7 @@ export function loadAndValidate() {
     if (item.tags !== undefined && (!Array.isArray(item.tags) || item.tags.some((t) => typeof t !== "string")))
       errors.push(`${where}: tags must be a string array`);
     if (item.providers !== undefined) {
-      if (!["skill", "subagent"].includes(item.kind)) errors.push(`${where}: providers only apply to skill/subagent`);
+      if (!PROVIDER_KINDS.includes(item.kind)) errors.push(`${where}: providers only apply to ${PROVIDER_KINDS.join("/")}`);
       else if (!Array.isArray(item.providers) || item.providers.length === 0 || item.providers.some((p) => !PROVIDERS.includes(p)))
         errors.push(`${where}: providers must be a non-empty subset of ${PROVIDERS.join(", ")}`);
     }
@@ -213,6 +274,18 @@ export function loadAndValidate() {
     for (const dep of item.requires ?? []) {
       if (!keys.has(dep)) errors.push(`${item.kind}:${item.slug}: requires unknown ${dep}`);
       if (dep === `${item.kind}:${item.slug}`) errors.push(`${item.kind}:${item.slug}: requires itself`);
+    }
+  }
+  for (const item of items.filter((i) => i.kind === "bundle")) {
+    const members = bundleMembers(item);
+    if (typeof members === "string") {
+      errors.push(`${item.path}/bundle.json: ${members}`);
+      continue;
+    }
+    if (members.length < 2) errors.push(`${item.path}/bundle.json: a bundle needs at least two members`);
+    for (const m of members) {
+      if (!keys.has(m)) errors.push(`${item.path}/bundle.json: unknown member ${m}`);
+      else if (!BUNDLE_MEMBER_KINDS.includes(m.split(":")[0])) errors.push(`${item.path}/bundle.json: ${m} cannot be in a bundle`);
     }
   }
   const cycle = findCycle(items);

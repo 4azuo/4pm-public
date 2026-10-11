@@ -1,0 +1,10 @@
+[
+  {
+    "version": "1.0.0",
+    "date": "2026-10-11",
+    "changes": [
+      "Initial release.",
+      "Bundles the git-prune-merged script and VS Code tasks with the /commit-message command."
+    ]
+  }
+]

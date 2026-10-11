@@ -1,11 +1,13 @@
 # CLAUDE.md — `4pm-public`
 
-Official 4PM marketplace packages (decision: 4PM ADR-0459; kinds/targets: ADR-0460). Outward-facing
+Official 4PM marketplace packages (decision: 4PM ADR-0459; kinds/targets: ADR-0460, bundles/commands/hooks:
+ADR-0461, guides: ADR-0462). Outward-facing
 overview: [`README.md`](README.md). Everything here is **English**.
 
 ## Items
 
-- One folder per item under `skills/`, `agents/`, `scripts/` or `vscode-tasks/`; the folder name is the
+- One folder per item under `skills/`, `agents/`, `scripts/`, `vscode-tasks/`, `commands/`, `hooks/`, `guides/` or
+  `bundles/`; the folder name is the
   **slug** (`[\w.-]+`). The same slug may exist under two kinds (e.g. a script and its VS Code task).
 - Every item is listed in **`registry.json`** (`kind`, `slug`, `path`, `name`, `description`,
   `version`, `category`, `tags`, optional `providers`, `requires`). `category` is one of the market's
@@ -24,6 +26,15 @@ overview: [`README.md`](README.md). Everything here is **English**.
   - **vscode-task** — exactly one `tasks.json` holding only `{ "tasks": [...] }`; labels unique across
     all items (prefix them `4pm: `); **never** `runOptions.runOn: "folderOpen"`. Reference scripts by
     their installed path and declare them in `requires` (`"script:<slug>"`).
+  - **command** — exactly one `command.md` (Claude slash command; Claude-only — for Codex publish a skill).
+  - **hook** — `hook.json` = `{ "hooks": { "<Event>": [{ "matcher"?, "hooks": [{ "type": "command",
+    "command", "timeout"? }] }] } }` + its scripts; write `{{hookDir}}` for the installed script folder. Hooks
+    run automatically on agent events — keep them small, fast, dependency-free and fail-open on bad input;
+    to block, print the reason to stderr and exit 2 (and `{"decision":"block","reason"}` on stdout for Codex).
+  - **guide** — exactly one `GUIDE.md`, written generically (no repo-specific paths); users apply it with
+    Adapt with AI. Keep the `AI_SECURITY.md` rule. Never part of a bundle.
+  - **bundle** — `bundle.json` listing ≥ 2 member items `<kind>:<slug>` (no guides, no bundles); `pack.mjs`
+    copies the members' current files, so bump the bundle's version whenever a member changes.
 - Scripts must be safe by default (dry run unless a flag says otherwise), dependency-free where
   possible (Python 3 stdlib, bash, Node built-ins), and must never print secrets.
 

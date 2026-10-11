@@ -1,0 +1,10 @@
+[
+  {
+    "version": "1.0.0",
+    "date": "2026-10-11",
+    "changes": [
+      "Initial release.",
+      "Blocks recursive deletes of / or ~, force pushes, direct pushes to main/master, curl|sh, chmod -R 777, raw device writes and printing secret files."
+    ]
+  }
+]

@@ -3,6 +3,7 @@
  * Pack every registry item into a marketplace zip (`4pm-package.json` manifest + payload — ADR-0185)
  * and write the release index `dist/registry.json` (ADR-0459) that the market-server seed reads.
  * Zips are deterministic (sorted entries, fixed timestamps) so the same source gives the same sha256.
+ * A bundle (ADR-0461) is composed from its member items' folders under `items/<kind>/<slug>/`.
  *
  * Usage: node tools/pack.mjs [--ref v2026.10.11] [--out dist]
  */
@@ -10,7 +11,7 @@ import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { crc32, deflateRawSync } from "node:zlib";
-import { ROOT, loadAndValidate, payloadFiles } from "./lib.mjs";
+import { ROOT, bundleMembers, loadAndValidate, payloadFiles } from "./lib.mjs";
 
 /** Read a `--name value` CLI argument. */
 function arg(name, fallback) {
@@ -83,6 +84,27 @@ rmSync(outDir, { recursive: true, force: true });
 mkdirSync(outDir, { recursive: true });
 
 const index = [];
+const byKey = new Map(items.map((i) => [`${i.kind}:${i.slug}`, i]));
+
+/** The payload entries of an item: its own files, or (bundle) every member's files under items/<kind>/<slug>/. */
+function payloadEntries(item) {
+  if (item.kind !== "bundle") return payloadFiles(item.path).map((f) => [f, readFileSync(join(ROOT, item.path, f))]);
+  const entries = [];
+  for (const key of bundleMembers(item)) {
+    const m = byKey.get(key);
+    for (const f of payloadFiles(m.path)) entries.push([`items/${m.kind}/${m.slug}/${f}`, readFileSync(join(ROOT, m.path, f))]);
+  }
+  return entries;
+}
+
+/** Bundle members for the manifest (`{kind, slug, providers?}`). */
+function manifestMembers(item) {
+  return bundleMembers(item).map((key) => {
+    const m = byKey.get(key);
+    return { kind: m.kind, slug: m.slug, ...(m.providers ? { providers: m.providers } : {}) };
+  });
+}
+
 for (const item of items) {
   const latest = changelogs.get(`${item.kind}:${item.slug}`)[0];
   const manifest = {
@@ -96,9 +118,9 @@ for (const item of items) {
     changelog: latest.changes.join("\n"),
     ...(item.providers ? { providers: item.providers } : {}),
     ...(item.requires ? { requires: item.requires } : {}),
+    ...(item.kind === "bundle" ? { members: manifestMembers(item) } : {}),
   };
-  const entries = [["4pm-package.json", Buffer.from(JSON.stringify(manifest, null, 2) + "\n")]];
-  for (const f of payloadFiles(item.path)) entries.push([f, readFileSync(join(ROOT, item.path, f))]);
+  const entries = [["4pm-package.json", Buffer.from(JSON.stringify(manifest, null, 2) + "\n")], ...payloadEntries(item)];
 
   const zip = buildZip(entries);
   const asset = `${item.kind}--${item.slug}--${item.version}.zip`;

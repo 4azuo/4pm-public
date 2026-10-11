@@ -1,0 +1,3 @@
+{
+  "members": ["script:git-prune-merged", "vscode-task:git-prune-merged", "command:commit-message"]
+}
