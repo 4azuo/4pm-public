@@ -161,6 +161,24 @@
         "git",
         "bundle"
       ]
+    },
+    {
+      "kind": "skill",
+      "slug": "4pm-doc-lint",
+      "path": "skills/4pm-doc-lint",
+      "name": "4PM doc lint",
+      "description": "Check and fix docs against the 4PM Doc Header standard (kinds, ids, parent/refs links, nesting depth) and code file headers; the dashboard Graph builds on it.",
+      "version": "1.0.0",
+      "category": "docs",
+      "tags": [
+        "docs",
+        "lint",
+        "structure"
+      ],
+      "providers": [
+        "claude",
+        "codex"
+      ]
     }
   ]
 }

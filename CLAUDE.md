@@ -47,7 +47,9 @@ overview: [`README.md`](README.md). Everything here is **English**.
 
 ## Release
 
-Push a tag `vYYYY.MM.DD` (add `.N` for a second release that day). `release.yml` validates, runs
+From the 4PM monorepo run the VS Code task **`public: release`** (`41-scripts/release-public.sh`): it checks
+this repo is clean and pushed, validates, lists what changed since the last tag (and items changed without a
+version bump), then pushes the next free tag. By hand: push a tag `vYYYY.MM.DD` (add `.N` for a second release that day). `release.yml` validates, runs
 `tools/pack.mjs`, and publishes `<kind>--<slug>--<version>.zip` + the release `registry.json` as
 GitHub Release assets. 4PM picks it up when the market-server's `OFFICIAL_PACKAGES_REF` is set to that
 tag (the seed only adds versions it does not have yet).

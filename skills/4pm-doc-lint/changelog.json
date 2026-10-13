@@ -1,0 +1,11 @@
+[
+  {
+    "version": "1.0.0",
+    "date": "2026-10-13",
+    "changes": [
+      "Initial release.",
+      "Explains the 4PM Doc Header (YAML frontmatter: id, kind, title, feature, parent, refs, status) and code file headers (@kind, @feature, doc tags, @er).",
+      "Ships doc-lint.mjs (Node built-ins only, read-only, no network): header, kind, duplicate id, broken ref, parent cycle, orphan, nesting depth and code-header checks, a 1-100 depth score, table or --json output, exit 1 on errors."
+    ]
+  }
+]
