@@ -1,0 +1,13 @@
+{
+  "name": "marketing-video-template",
+  "version": "1.0.0",
+  "entry": "render.mjs",
+  "inputs": {
+    "MKT_VIDEO_JSON": "JSON file: { name, settings, scenes (approved), inputs: [{ shot, file, theme, locale, size }] }",
+    "MKT_INPUT_DIR": "folder holding the input pictures (file names from inputs[].file)",
+    "MKT_AUDIO_DIR": "optional folder of uploaded audio files named <AUD-id>.<ext>",
+    "MKT_OUT_DIR": "where <video>.<locale>.mp4 and <video>.<locale>.poster.jpg are written",
+    "REMOTION_LICENSE_KEY": "optional Remotion license key (passed as --license-key)"
+  },
+  "editable": ["src/brand.ts", "src/Scene.tsx", "public/brand/"]
+}

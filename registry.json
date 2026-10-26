@@ -179,6 +179,20 @@
         "claude",
         "codex"
       ]
+    },
+    {
+      "kind": "script",
+      "slug": "marketing-video-template",
+      "path": "scripts/marketing-video-template",
+      "name": "Marketing video template",
+      "description": "Remotion project 4PM scaffolds for a project's marketing video: scenes over photo-run screenshots, captions per locale, transitions, a synthesized or uploaded soundtrack, one mp4 + poster per locale.",
+      "version": "1.0.0",
+      "category": "product",
+      "tags": [
+        "marketing",
+        "video",
+        "remotion"
+      ]
     }
   ]
 }

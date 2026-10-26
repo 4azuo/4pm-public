@@ -1,0 +1,23 @@
+{
+  "name": "marketing-video-template",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "4PM marketing video: a Remotion project rendered on the worker from the video's approved scenes and photo-run screenshots.",
+  "scripts": {
+    "render": "node render.mjs",
+    "studio": "remotion studio src/index.ts",
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.532",
+    "@remotion/transitions": "4.0.532",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.532"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.8",
+    "typescript": "5.8.3"
+  }
+}

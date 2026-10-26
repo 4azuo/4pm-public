@@ -1,0 +1,9 @@
+[
+  {
+    "version": "1.0.0",
+    "date": "2026-10-26",
+    "changes": [
+      "First version: scenes from approved SCENES.md rows over photo-run screenshots, captions per locale, fade / slide / zoom / cut transitions, a synthesized soundtrack (TypeScript port of the 93-video synth) or uploaded audio, one H.264 faststart mp4 + poster per locale."
+    ]
+  }
+]
